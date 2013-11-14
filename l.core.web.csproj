@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{963D7F0A-5C8C-4DF2-B940-EF1753D30AB6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>l.core.web</RootNamespace>
+    <AssemblyName>l.core.web</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\l.core\bin\Debug\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\l.core\bin\Debug\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\l.cloud\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BizHelper.cs" />
+    <Compile Include="Helper\UrlHelper.cs" />
+    <Compile Include="HtmHelper\Mobile\Editor.cs" />
+    <Compile Include="HtmHelper\Mobile\Grid.cs" />
+    <Compile Include="HtmHelper\Mobile\QueryParams.cs" />
+    <Compile Include="HttpHelper.cs" />
+    <Compile Include="HtmHelper\Editor.cs" />
+    <Compile Include="HtmHelper\Editors.cs" />
+    <Compile Include="HtmHelper\HtmHelper.cs" />
+    <Compile Include="MetaPageHelper.cs" />
+    <Compile Include="Paginate1.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HtmHelper\Layout.cs" />
+    <Compile Include="MetaHelper.cs" />
+    <Compile Include="ModelBinder.cs" />
+    <Compile Include="ModulePageHelper.cs" />
+    <Compile Include="MongoDBModelBinder.cs" />
+    <Compile Include="UrlHelper.cs" />
+    <Compile Include="VersionHelper.cs" />
+    <Compile Include="Account.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\l.core\l.core.csproj">
+      <Project>{E5CFEB35-5ED0-49EE-B8C0-CCA05F17B417}</Project>
+      <Name>l.core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
