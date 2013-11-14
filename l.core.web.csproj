@@ -76,7 +76,7 @@
     <Compile Include="Account.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\l.core\l.core.csproj">
+    <ProjectReference Include="..\lcore\l.core.csproj">
       <Project>{E5CFEB35-5ED0-49EE-B8C0-CCA05F17B417}</Project>
       <Name>l.core</Name>
     </ProjectReference>
