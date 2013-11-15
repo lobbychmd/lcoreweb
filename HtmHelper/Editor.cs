@@ -34,7 +34,9 @@ namespace l.core.web.html
                 attr["maxlength"] = (mf.CharLength).ToString();
                 attr["size"] = (mf.CharLength).ToString();
             }
-            else w = 112;
+            else if ((mf.EditorType??"").ToUpper().Equals("DATETIME") ) {
+                w = 16 * 8;
+            } else w = 112;
             attr.Css("width",  w.ToString() + "px");
         }
 
@@ -73,8 +75,12 @@ namespace l.core.web.html
                     strHtml = html.CheckBox(name, Convert.ToBoolean( value), attr).ToHtmlString();
                 } else if ((mf.EditorType ?? "").ToUpper().Equals("DATE"))
                     strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
-                else if ((mf.EditorType ?? "").ToUpper().Equals("DATETIME")){
+                else if ((mf.EditorType ?? "").ToUpper().Equals("DATETIME"))  {//编辑框暂不支持日期时间
                     attr["type"] = "datetime";
+                    strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
+                }
+                else if ((mf.EditorType ?? "").ToUpper().Equals("TIME")){
+                    attr["type"] = "time";
                     strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
                 }
                 else if ((mf.EditorType ?? "").ToUpper().Equals("NUMBER"))
@@ -120,13 +126,7 @@ namespace l.core.web.html
             attr["class"] = (attr.ContainsKey("class") ? (attr["class"].ToString() + " ") : "") + "DateEditor";
             if (!attr.ContainsKey("format"))
             { }//attr["format"] = @"^(^(\d{4}|\d{2})(\-|\/|\.)\d{1,2}\3\d{1,2}$)|(^\d{4}年\d{1,2}月\d{1,2}日$)$";
-            strHtml = html.TextBox(name, (value is DateTime ?
-                (mf.EditorType.ToUpper() == "DATE")?
-                    ((DateTime)value).ToString("yyyy-MM-dd") :
-                    //((DateTime)value).ToString("yyyy-MM-dd hh:mm:ss")
-                    ((DateTime)value).ToString("hh:mm:ss")
-                : Convert.ToString(value)),
-            attr).ToHtmlString();
+            strHtml = html.TextBox(name, mf.Render(value), attr).ToHtmlString();
         }
 
         public string Html()
