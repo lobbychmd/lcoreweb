@@ -51,7 +51,7 @@ namespace l.core.web
                         from tAccountRoles ar join tRoleFunc rf on ar.RoleID = rf.RoleID
                         join tModuleFunc mf on rf.FuncID = mf.FuncID
                         where ar.UserNO = :UserNO and ar.PlaceNO = :Where
-                          and mf.ModuleID = :ModuleID", new Dictionary<string, DBParam>{
+                          and mf.ModuleID = :ModuleID ", new Dictionary<string, DBParam>{
                                     {"UserNO", new DBParam{ ParamValue = UserNO}},
                                     {"ModuleID", new DBParam{ ParamValue = CurrModule.ModuleID}},
                                     {"Where", new DBParam{ ParamValue = Where}}});
@@ -186,7 +186,7 @@ namespace l.core.web
                                 {"UserNO", new DBParam{ ParamValue = UserNO}},
                                 {"Where", new DBParam{ ParamValue = Where}}});
 
-                    DataTable dtMenu = DBHelper.ExecuteQuery(conn, @"select * from tMenu", null);
+                    DataTable dtMenu = DBHelper.ExecuteQuery(conn, @"select * from tMenu order by ParentID, Idx, ModuleID", null);
                     _modules = new List<MetaModule>();
 
                     menu.Load(dtModule, dtModulePower, dtMenu, _modules);
