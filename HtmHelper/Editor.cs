@@ -29,14 +29,18 @@ namespace l.core.web.html
 
         public static void SetSizeAttr(HtmlAttr attr, MetaField mf) {
             int w = 0;
+            int editorSize = 0;
             if (mf.CharLength > 0) {
-                w = mf.CharLength * 8;
+                editorSize = mf.CharLength;
                 attr["maxlength"] = (mf.CharLength).ToString();
                 attr["size"] = (mf.CharLength).ToString();
             }
             else if ((mf.EditorType??"").ToUpper().Equals("DATETIME") ) {
-                w = 16 * 8;
-            } else w = 112;
+                editorSize = 16;
+            }
+            if (attr.ContainsKey("editorSize") ) 
+                editorSize = Convert.ToInt32( attr[ "editorSize" ]);
+            w = (editorSize == 0?14: editorSize) * 8;
             attr.Css("width",  w.ToString() + "px");
         }
 
