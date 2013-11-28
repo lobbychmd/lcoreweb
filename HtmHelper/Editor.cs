@@ -22,6 +22,11 @@ namespace l.core.web.html
             MvcHtmlString result = new MvcHtmlString(new l.core.web.html.PasswordEditor(html, name, value, mf, htmlAttributes).Html());
             return result;
         }
+        static public MvcHtmlString PropEditor(this HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes)
+        {
+            MvcHtmlString result = new MvcHtmlString(new l.core.web.html.PropEditor(html, name, value, mf, htmlAttributes).Html());
+            return result;
+        }
     }
 
     public class Editor : IHtml {
@@ -59,7 +64,10 @@ namespace l.core.web.html
             if (mf != null) {
                 var dropdownlist = ((mf.EditorType ?? "").ToUpper().Equals("DROPDOWNLIST"));
                 var dic = !string.IsNullOrEmpty(mf.DicNO);
-                if (dic || dropdownlist){
+                if ((mf.EditorType ?? "").ToUpper().Equals("PROPEDIT"))
+                    strHtml = html.PropEditor(name, value, mf, attr).ToHtmlString();
+                else if (dic || dropdownlist)
+                {
                     bool idprefix = (mf.FieldName.Length > 2) && mf.FieldName.IndexOf("ID") == mf.FieldName.Length - 2;
                     var strvalue = Convert.ToString(value);
                     //if (!ParialMatch) if (!mf.List().ContainsKey(Convert.ToString(value))) d[Convert.ToString(value)] =Convert.ToString(value);
@@ -98,7 +106,8 @@ namespace l.core.web.html
 
                 else if ((mf.EditorType ?? "").ToUpper().Equals("PASSWORD"))
                     strHtml = html.PasswordEditor(name, value, mf, attr).ToHtmlString();
-                else {
+                else
+                {
                     SetSizeAttr(attr, mf);
                     strHtml = html.TextBox(name, value, attr).ToHtmlString();
                 }
@@ -178,6 +187,28 @@ namespace l.core.web.html
         }
     }
     
+    public class PropEditor : IHtml
+    {
+        private string strHtml;
+
+        public PropEditor(System.Web.Mvc.HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes)
+        {
+            var attr = new HtmlAttr(htmlAttributes);
+            Editor.SetSizeAttr(attr, mf);
+            attr["class"] = (attr.ContainsKey("class") ? (attr["class"].ToString() + " ") : "") + "PropEditor";
+            strHtml = html.TextBox(name, value, attr).ToHtmlString();
+            strHtml += "<div class='propTable'>";
+            foreach(var i in mf.List()){
+                strHtml += "<div><input type=checkbox idx='" + i.Key.Split('.')[0] + "' /><span>" + i.Value + "</span></div>";
+            }
+            strHtml += "</div>";
+        }
+
+        public string Html()
+        {
+            return strHtml;
+        }
+    }
 
     public class ListEditor :HtmlTagHelper, IHtml{
         public ListEditor(HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes) :base(null, "fieldset", htmlAttributes){
