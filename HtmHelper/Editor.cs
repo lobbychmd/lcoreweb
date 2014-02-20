@@ -51,7 +51,7 @@ namespace l.core.web.html
 
         public Editor(System.Web.Mvc.HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes) {
             if (mf != null) value = mf.Format(value);
-
+            
             var attr = new HtmlAttr(htmlAttributes);
             attr["editor"] = "true";
             attr["fn"] = name.IndexOf(".") < 0 ? name : name.Split('.').Last();
