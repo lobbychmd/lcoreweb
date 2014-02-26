@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.Net;
 
 namespace l.core.web
 {
@@ -15,6 +16,11 @@ namespace l.core.web
         public string ProjectName { get; set; }
         public string SyncPassword { get; set; }
         public bool Suspend { get; set; }
+        public List<string> Action { get; set; }
+
+        public   VersionHelper() {
+            Action = new List<string>();
+        }
 
         static public void Register(string config = null) {
             string FitSite = string.IsNullOrEmpty(config)? ConfigurationManager.AppSettings["FitSite"] : config;
@@ -34,10 +40,12 @@ namespace l.core.web
                     Password = lll.ContainsKey("Password") ? lll["Password"] : "",
                     SyncPassword = lll.ContainsKey("SyncPassword") ? lll["SyncPassword"] : "",
                     ProjectCode = lll.ContainsKey("ProjectCode") ? lll["ProjectCode"] : "",
-                    ProjectName = lll.ContainsKey("ProjectName") ? lll["ProjectName"] : ""
+                    ProjectName = lll.ContainsKey("ProjectName") ? lll["ProjectName"] : "",
+                    Action = (ConfigurationManager.AppSettings["FitSiteAction"]??"").Split(' ').ToList()
                 };
             }
         }
+
         private string getData(string url) {
             string r = l.core.web.HttpHelper.Execute(url, null, false, 300);
             if (r.IndexOf("Login failed") > 0) return l.core.web.HttpHelper.Execute(url);
@@ -66,6 +74,22 @@ namespace l.core.web
                 }
             else return null;
         }
+
+        public void InvokeRec<T>(object obj, string metaType, string[] keyFields, int timeCost) { 
+            var t = typeof(T);
+            var url = string.Format("{0}/Expim/timeCost/{1}?{2}&time={3}", FitSite, metaType,
+                string.Join("&",keyFields.Select(p=> p + "=" + t.GetProperty(p.ToString()).GetValue(obj, null).ToString())), timeCost);
+            Uri HttpSite = new Uri(url);
+
+            // 创建请求对象
+            HttpWebRequest wreq = WebRequest.Create(HttpSite) as HttpWebRequest;
+            // 创建状态对象
+            //RequestState rs = new RequestState();
+            //rs.Request = wreq;
+            IAsyncResult ar = wreq.BeginGetResponse(null, null);//new AsyncCallback(RespCallback), rs);
+
+        }
+
 
         public bool CheckNewAs<T>(object obj, string metaType, string[] keyFields, bool updateLocal)  {
             if (Suspend) return true;

@@ -97,7 +97,7 @@ namespace l.core.web
             #region 自动更新新模块
             if (dtModule == null) dtModule = getMetaModule();
             using (var conn = Project.Current.GetConn()) {
-                if (l.core.VersionHelper.Helper != null)   {
+                if (l.core.VersionHelper.Helper != null && l.core.VersionHelper.Helper.Action.IndexOf("update") >= 0)   {
                     l.core.MetaModule[] modules = l.core.VersionHelper.Helper.GetAs<l.core.MetaModule[]>("MetaModule.all", null) as l.core.MetaModule[];
                     //var new_modules = from m in modules where dtModule.DefaultView.Find(m.ModuleID) < 0 select m;
                     if (modules != null)  {

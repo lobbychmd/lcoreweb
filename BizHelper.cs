@@ -14,8 +14,7 @@ namespace l.core.web
         {
             l.core.BizResult r = new l.core.BizResult();
             //有时候不检查模型,因为是共用模型 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid)  {
                 foreach (var i in ModelState.Where(p => p.Value.Errors.Count > 0))
                     foreach (var j in i.Value.Errors)
                         r.Errors.Add(new BizValidationResult(j.ErrorMessage, new[] { i.Key }));
