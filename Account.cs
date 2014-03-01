@@ -143,7 +143,6 @@ namespace l.core.web
             }
         }
 
-
         public Account() {
             checkProject();
             var session = System.Web.HttpContext.Current.Session;
