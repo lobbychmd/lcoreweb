@@ -49,7 +49,7 @@ namespace l.core.web
         //Func<string, object>, string 是参数， object 是返回值
 
         public void Bind(Func<string, object> predicate) {
-            foreach (string s in values.AllKeys.Union(new[] { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName" })) {
+            foreach (string s in values.AllKeys.Union(new[] { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName", "LocalStoreNO" })) {
                 var ms = new Regex(@"[\w_]+\[\d+\]\.([\w_]+)$").Match(s);
                 if (ms.Success)
                 {

@@ -33,8 +33,7 @@ namespace l.core.web
                 }catch{
                     throw new Exception ("FitSite 连接字符串格式错误.");
                 }
-                l.core.VersionHelper.Helper = new l.core.web.VersionHelper
-                {
+                l.core.VersionHelper.Helper = new l.core.web.VersionHelper {
                     FitSite = ll[0],
                     UserNO = lll.ContainsKey("UserNO") ? lll["UserNO"] : "",
                     Password = lll.ContainsKey("Password") ? lll["Password"] : "",
@@ -75,14 +74,16 @@ namespace l.core.web
             else return null;
         }
 
-        public void InvokeRec<T>(object obj, string metaType, string[] keyFields, int timeCost) { 
+        public void InvokeRec<T>(object obj, string metaType, string[] keyFields, string ParamsValue,  int timeCost) { 
             var t = typeof(T);
-            var url = string.Format("{0}/Expim/timeCost/{1}?{2}&time={3}", FitSite, metaType,
-                string.Join("&",keyFields.Select(p=> p + "=" + t.GetProperty(p.ToString()).GetValue(obj, null).ToString())), timeCost);
+            var url = string.Format("{0}/Expim/timeCost/{1}?{2}&time={3}&UserNO={4}&Password={5}&ProjectCode={6}&ProjectName={7}&SyncPassword={8}&ParamValues={9}", FitSite, metaType,
+                string.Join("&",keyFields.Select(p=> p + "=" + t.GetProperty(p.ToString()).GetValue(obj, null).ToString())), timeCost,
+                UserNO, Password, ProjectCode, ProjectName, SyncPassword, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ParamsValue)).Replace("+", "`").Replace("=", "~"));
             Uri HttpSite = new Uri(url);
 
             // 创建请求对象
             HttpWebRequest wreq = WebRequest.Create(HttpSite) as HttpWebRequest;
+            //wreq.Method = "POST";
             // 创建状态对象
             //RequestState rs = new RequestState();
             //rs.Request = wreq;
@@ -107,8 +108,6 @@ namespace l.core.web
             }
             else return true;
         }
-
-        
 
         public List<string[]> GetList(string MetaType) {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<List<string[]>>(

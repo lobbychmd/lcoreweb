@@ -189,7 +189,7 @@ namespace l.core.web
 
                 var @params = typ.GetConstructors()[0].GetParameters().Select(p =>  {
                     object obj = null;
-                    var str_value = ui_params.ContainsKey(p.Name) ? ui_params[p.Name].ToString() : null;
+                    var str_value = ui_params.ContainsKey(p.Name) ? Convert.ToString( ui_params[p.Name]) : null;
                     if (p.ParameterType == typeof(System.Web.Mvc.HtmlHelper)) obj = html;
                     else if (p.ParameterType == typeof(MetaPageHelper))
                         obj = helper;
@@ -320,10 +320,10 @@ namespace l.core.web
             };
             if (!ajax) 
                 return new MvcHtmlString(string.Join("\n", include.Select(p =>
-                    string.Format("<script src='/Scripts/idc.ui.script/{0}' type='text/javascript'></script>", p)
+                    string.Format("<script src='/Scripts/idc.ui.script/{0}?{1}' type='text/javascript'></script>", p, System.Configuration.ConfigurationManager.AppSettings["verfix"])
                 )));
             else return new MvcHtmlString("[" + string.Join(",", include.Select(p =>
-                    string.Format("'/Scripts/idc.ui.script/{0}'", p)
+                    string.Format("'/Scripts/idc.ui.script/{0}?{1}'", p, System.Configuration.ConfigurationManager.AppSettings["verfix"])
                 )) + "]");
         }
     }
@@ -408,12 +408,13 @@ namespace l.core.web
             
             foreach (var i in queryList) {
                 var q = new Query(i).Load();
+                q.SysValues = account.SysParamValues();
                 __query[i] = q;
-                __fms[i + "_p"] = q.GetParamMeta();
+                __fms[i + "_p"] = q.GetParamMeta(new Dictionary<string, DBParam> { { "Operator", new DBParam { ParamValue = Account.UserNO } } });
                 int c = 0;
 
                 //new l.core.web.ModelBinder(q.Params.Select(p => p.ParamName).ToArray(), q.SmartParams, request.QueryString).Bind(p => account.ParamFilter(p, null));
-                foreach (var j in request.QueryString.AllKeys.Union(new[] { "Operator", "OperName" }))
+                foreach (var j in request.QueryString.AllKeys.Union(new[] { "Operator", "OperName", "Where", "LocalStoreNO" }))
                     if (q.Params.Find(p=>p.ParamName == j) != null) {
                         var v = request.QueryString[j];
                         if (!string.IsNullOrEmpty(v)) v = v.Split('.')[0];
@@ -453,7 +454,9 @@ namespace l.core.web
         public void ExecuteLookup()  {
             if (page.Lookups != null)
                 foreach (var l in page.Lookups)  {
-                    l.Ready(pageData.GetTable(l.Table), __fms[l.Table.Split('.')[0]].All).BindData(pageData.GetTable(l.Table), null, ActiveFlow!=null && ActiveFlow.ID 
+                    l.Ready(pageData.GetTable(l.Table), __fms[l.Table.Split('.')[0]].All).BindData(pageData.GetTable(l.Table), 
+                            new []{"Operator", "OperName", "LocalStoreNO"}.ToDictionary(p=>p, q=> account.ParamFilter(q, null))
+                        , ActiveFlow!=null && ActiveFlow.ID 
                         == "New"? true: false);
                 }
         }
@@ -473,6 +476,9 @@ namespace l.core.web
                         while(table.Columns.Contains("Checked_" + i.ToString())){
                             if (Convert.ToBoolean(table.Rows[0]["Checked_" + i.ToString()])) {
                                 activeFlow = fs.Find(p => p.ID == "Checked_" + i.ToString());
+                                if (activeFlow == null) {
+                                    throw new Exception("流程配置和数据对象不一致，数据对象的 Checked_" + i.ToString() + " 在未包含在流程定义里面.");
+                                }
                                 //break;
                             }
                             i++;

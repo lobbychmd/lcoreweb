@@ -126,7 +126,7 @@ namespace l.core.web
                             foreach (DataTable table in ds.Tables) table.Rows.Add(table.NewRow());
                         }
                     }
-                    var fms = query.GetParamMeta();
+                    var fms = query.GetParamMeta(new Dictionary<string,DBParam>{{"Operator", new DBParam{ParamValue = Account.UserNO}}});
                     context.ViewData["fms-" + query.QueryName + "_p"] = fms;
                     context.ViewData["lookups"] = l.core.SmartLookup.GetLookupFromFieldMeta(fms.All);
                     if (ds != null) context.ViewData["fms-" + query.QueryName] = new l.core.FieldMetaHelper().Ready(ds, query.QueryName); 
@@ -377,7 +377,7 @@ namespace l.core.web
 
             };
             return new MvcHtmlString(string.Join("\n", include.Select(p =>
-                string.Format("<script src='/Scripts/helper/{0}' type='text/javascript'></script>", p)
+                string.Format("<script src='/Scripts/helper/{0}?{1}' type='text/javascript'></script>", p, System.Configuration.ConfigurationManager.AppSettings["verfix"])
             )));
         }
     }

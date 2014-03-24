@@ -87,10 +87,12 @@ namespace l.core.web
             return paramName == "Operator" ? UserNO 
                 : (paramName == "LangID" ? "936" 
                     : (paramName == "OperName" ?  UserName
-                        :  (paramName =="LastUpdateTime"? DateTime.Now : paramValue)));
+                        : (paramName == "LocalStoreNO" ? Where
+                            : (paramName == "Where" ? Where
+                                :  (paramName =="LastUpdateTime"? DateTime.Now : paramValue)))));
         }
         public Dictionary<string, object> SysParamValues() {
-            return "Operator;LangID;OperName;LastUpdateTime".Split(';').ToDictionary(p=> p, q=>ParamFilter(q, null));
+            return "Operator;LangID;OperName;LastUpdateTime;LocalStoreNO".Split(';').ToDictionary(p => p, q => ParamFilter(q, null));
         }
 
         public void UpdateModules( DataTable dtModule) {
@@ -110,8 +112,8 @@ namespace l.core.web
                                         declare @tt varchar(1)
                                         select @tt = type from sysobjects where name='tRoleFunc'
                                         
-                                         -- insert into tRoleFunc(RoleID, FuncID, TimeStamp) select RoleID, :FuncID, getdate() from tRoles 
-                                            --    where RoleID not in(select RoleID from tRoleFunc where FuncID = :FuncID) and @tt = 'U'
+                                          insert into tRoleFunc(RoleID, FuncID, TimeStamp) select RoleID, :FuncID, getdate() from tRoles 
+                                                where RoleID not in(select RoleID from tRoleFunc where FuncID = :FuncID) and @tt = 'U'
                                         
                                         select @iidx = isnull(max(Idx), 0) + 1 from tMenu where ParentID = :ParentID
                                         insert into tMenu(ParentID, Idx, ModuleID) values(:ParentID, @iidx, :ModuleID)",

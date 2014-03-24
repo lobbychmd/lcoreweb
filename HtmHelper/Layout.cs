@@ -104,7 +104,6 @@ namespace l.core.web.html
         {
             return @".AjaxPanel {border:0px solid gray;}";
         }
-        
     }
 
     public class AlignPanel : HtmlTagHelper

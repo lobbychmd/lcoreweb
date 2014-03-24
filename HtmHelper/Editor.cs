@@ -100,7 +100,7 @@ namespace l.core.web.html
                 else if ((mf.EditorType ?? "").ToUpper().Equals("LIST"))
                     strHtml = new ListEditor(html, name, (value ?? "").ToString(), mf, attr).Html();
                 else if ((mf.EditorType ?? "").ToUpper().Equals("TEXTAREA")) {
-                    attr["maxlength"] = (mf.CharLength).ToString();
+                    //SetSizeAttr(attr, mf);
                     strHtml = html.TextArea(name, (value ?? "").ToString(), attr).ToHtmlString();
                 }
 
