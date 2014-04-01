@@ -78,7 +78,7 @@ namespace l.core.web
             var t = typeof(T);
             var url = string.Format("{0}/Expim/timeCost/{1}?{2}&time={3}&UserNO={4}&Password={5}&ProjectCode={6}&ProjectName={7}&SyncPassword={8}&ParamValues={9}", FitSite, metaType,
                 string.Join("&",keyFields.Select(p=> p + "=" + t.GetProperty(p.ToString()).GetValue(obj, null).ToString())), timeCost,
-                UserNO, Password, ProjectCode, ProjectName, SyncPassword, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ParamsValue)).Replace("+", "`").Replace("=", "~"));
+                UserNO, Password, ProjectCode, ProjectName, SyncPassword, Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(ParamsValue)).Replace("+", "`").Replace("=", "~"));
             Uri HttpSite = new Uri(url);
 
             // 创建请求对象
