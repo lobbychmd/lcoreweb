@@ -10,7 +10,7 @@ namespace l.core.web
 {
     public class UrlHelper
     {
-        static public string QueryString(HttpRequestBase request, string key, string value) { 
+        static public string QueryString(HttpRequestBase request, string key, object value) { 
             
             //这种做法会把 path 重新组合 成逗号分隔的格式 （因为多个key）
             //return request.QueryString.AllKeys.Contains(key)?

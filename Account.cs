@@ -148,11 +148,11 @@ namespace l.core.web
         public Account() {
             checkProject();
             var session = System.Web.HttpContext.Current.Session;
-            UserNO = session["UserNO"] == null ? null : session["UserNO"].ToString();
+            UserNO = session["UserNO" + l.core.Project.Current.SimulateCode] == null ? null : session["UserNO" + l.core.Project.Current.SimulateCode].ToString();
             Signin = UserNO != null;
-            UserName = session["UserName"] == null ? null : session["UserName"].ToString();
-            Password = session["Password"] == null ? null : session["Password"].ToString();
-            Where = session["Where"] == null ? null : session["Where"].ToString();
+            UserName = session["UserName" + l.core.Project.Current.SimulateCode] == null ? null : session["UserName" + l.core.Project.Current.SimulateCode].ToString();
+            Password = session["Password" + l.core.Project.Current.SimulateCode] == null ? null : session["Password" + l.core.Project.Current.SimulateCode].ToString();
+            Where = session["Where" + l.core.Project.Current.SimulateCode] == null ? null : session["Where" + l.core.Project.Current.SimulateCode].ToString();
             if(Signin){
                 Powers = new Dictionary<string, bool>();
                 using (var conn = l.core.Project.Current.GetConn())  {

@@ -32,8 +32,10 @@ namespace l.core.web
         private string getValue(string key) {
             if (key == "Old_LastUpdateTime")
                 return values["LastUpdateTime"];
-            else if (values[key + "@type"] == "password" && values[key] != string.Empty)
-                return l.core.Crypt.Encode(values[key]);
+            else if (values[key + "@type"] == "password"   && values[key] != string.Empty )  {//写了这个旧密码就不加密了，
+                var userno = values["UserNO"] ?? paramsHelper.GetParamValue("Operator");
+                return l.core.Crypt.Encode(userno +  values[key]);
+            }
             else {
                 bool dickey = (values[key + "@type"] == "dic");
                 bool dicvalue = (values[key + "ID"] != null && values[key + "ID@type"] == "dic");
@@ -49,7 +51,7 @@ namespace l.core.web
         //Func<string, object>, string 是参数， object 是返回值
 
         public void Bind(Func<string, object> predicate) {
-            foreach (string s in values.AllKeys.Union(new[] { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName", "LocalStoreNO" })) {
+            foreach (string s in new[] { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName", "LocalStoreNO" }.Union(values.AllKeys)) {
                 var ms = new Regex(@"[\w_]+\[\d+\]\.([\w_]+)$").Match(s);
                 if (ms.Success)
                 {

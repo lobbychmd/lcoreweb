@@ -129,7 +129,7 @@ namespace l.core.web
                     var fms = query.GetParamMeta(new Dictionary<string,DBParam>{{"Operator", new DBParam{ParamValue = Account.UserNO}}});
                     context.ViewData["fms-" + query.QueryName + "_p"] = fms;
                     context.ViewData["lookups"] = l.core.SmartLookup.GetLookupFromFieldMeta(fms.All);
-                    if (ds != null) context.ViewData["fms-" + query.QueryName] = new l.core.FieldMetaHelper().Ready(ds, query.QueryName); 
+                    if (ds != null) context.ViewData["fms-" + query.QueryName] = new l.core.FieldMetaHelper().Ready(ds, query.QueryName).CheckSQLList(true, new Dictionary<string, DBParam> { { "Operator", new DBParam { ParamValue = Account.UserNO } } }); 
                     AddDataSet(q.Trim(), ds);
                 }
 
@@ -171,7 +171,8 @@ namespace l.core.web
             cls = "l.core.web.html." + cls;
             var typ = asm.GetType(cls);
             if (typ == null) {
-                asm = System.Reflection.Assembly.Load("l.publish.web");
+                try { asm = System.Reflection.Assembly.Load("l.core.web.pub"); }
+                catch { asm = System.Reflection.Assembly.Load("l.publish.web"); }
                 typ = asm.GetType(cls);
                 if (typ == null) {
                     asm = System.Reflection.Assembly.Load("l.net");

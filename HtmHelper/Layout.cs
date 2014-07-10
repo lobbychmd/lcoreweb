@@ -40,6 +40,7 @@ namespace l.core.web.html
             //if (m != null && page != null) //这里没用，会被后面覆盖
             //    name= "module_page_" + m.ModuleID + "_" + page.PageID.ToString();
             Attr("href", html.ViewContext.HttpContext.Request.Url.ToString());
+            Attr("simulateCode", Project.Current.SimulateCode);
             AddClass("ModulePage").Attr("mid", m == null? null : m.ModuleID)
                 .Attr("pageid", page != null? page.PageID: null)
                 .Attr("pageType", page == null? null:page.PageType.ToString());

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Net;
+using l.core;
 
 namespace l.core.web
 {
@@ -12,11 +13,14 @@ namespace l.core.web
         public string FitSite { get; set; }
         public string UserNO { get; set; }
         public string Password { get; set; }
-        public string ProjectCode { get; set; }
+        public string projectCode { get; set; }
         public string ProjectName { get; set; }
-        public string SyncPassword { get; set; }
+        public string syncPassword { get; set; }
         public bool Suspend { get; set; }
         public List<string> Action { get; set; }
+
+        public string ProjectCode { get { return Project.Current != null && !string.IsNullOrEmpty(Project.Current.SimulateCode) ? Project.Current.ProjectCode : projectCode; } }
+        public string SyncPassword { get { return Project.Current != null && !string.IsNullOrEmpty(Project.Current.SimulateCode) ? Project.Current.SyncPassword : syncPassword; } }
 
         public   VersionHelper() {
             Action = new List<string>();
@@ -37,8 +41,8 @@ namespace l.core.web
                     FitSite = ll[0],
                     UserNO = lll.ContainsKey("UserNO") ? lll["UserNO"] : "",
                     Password = lll.ContainsKey("Password") ? lll["Password"] : "",
-                    SyncPassword = lll.ContainsKey("SyncPassword") ? lll["SyncPassword"] : "",
-                    ProjectCode = lll.ContainsKey("ProjectCode") ? lll["ProjectCode"] : "",
+                    syncPassword = lll.ContainsKey("SyncPassword") ? lll["SyncPassword"] : "",
+                    projectCode = lll.ContainsKey("ProjectCode") ? lll["ProjectCode"] : "",
                     ProjectName = lll.ContainsKey("ProjectName") ? lll["ProjectName"] : "",
                     Action = (ConfigurationManager.AppSettings["FitSiteAction"]??"").Split(' ').ToList()
                 };
@@ -53,6 +57,7 @@ namespace l.core.web
 
         public string GetStr(string metaType, string keyValues)
         {
+            
             string url = string.Format("{0}/Sync/Export/{1}?UserNO={2}&Password={3}&ProjectCode={4}&ProjectName={5}&SyncPassword={6}&{7}",
                         FitSite, metaType, UserNO, Password, ProjectCode, ProjectName, SyncPassword, keyValues);
             string data = getData(url);
@@ -102,9 +107,9 @@ namespace l.core.web
                 if (metaType == "MetaField") if ((remoteObj != null) && (remoteObj.Context == null)) remoteObj.Context = "";
 
                 var r = remoteObj.Version == (obj as dynamic).Version;
-                if (((obj as dynamic).Version == null || !r) && updateLocal)
-                    remoteObj.Save();
-                return r;
+                var r1 = ((obj as dynamic).Version == null || !r) && updateLocal;
+                if (r1) remoteObj.Save();
+                return !r1;
             }
             else return true;
         }
@@ -112,6 +117,27 @@ namespace l.core.web
         public List<string[]> GetList(string MetaType) {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<List<string[]>>(
                         getData(string.Format("{0}/Sync/MetaList/{1}", FitSite, MetaType)));
+        }
+
+        public string GetMetaDDL() {
+            return HttpHelper.Execute(string.Format("{0}/Sync/metaDDL", FitSite));
+        }
+        public string GetBizDDL()
+        {
+            return HttpHelper.Execute(string.Format("{0}/Sync/bizDDL?UserNO={1}&Password={2}&ProjectCode={3}&ProjectName={4}&SyncPassword={5}",
+                        FitSite, UserNO, Password, ProjectCode, ProjectName, SyncPassword), null, true);
+        }
+
+        public string GetInitDDL()
+        {
+            return HttpHelper.Execute(string.Format("{0}/Sync/initDDL?UserNO={1}&Password={2}&ProjectCode={3}&ProjectName={4}&SyncPassword={5}",
+                        FitSite, UserNO, Password, ProjectCode, ProjectName, SyncPassword), null, true);
+        }
+
+        public string GetInitFrmDDL()
+        {
+            return HttpHelper.Execute(string.Format("{0}/Sync/initFrmDDL?UserNO={1}&Password={2}&ProjectCode={3}&ProjectName={4}&SyncPassword={5}",
+                        FitSite, UserNO, Password, ProjectCode, ProjectName, SyncPassword), null, true);
         }
     }
 }

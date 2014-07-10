@@ -461,8 +461,8 @@ namespace l.core.web
                 }
         }
 
-        private void findActiveFlow(DataSet ds) {
-            
+        static public PageFlowItem FindActiveFlow(ModulePage page, DataSet ds) {
+            PageFlowItem activeFlow = null;
             if (page.Flows != null){
                 var table = ds.Tables[0];
                 var fs = page.Flows.ToList();
@@ -489,6 +489,11 @@ namespace l.core.web
 
                 if (activeFlow == null) throw new Exception("未能根据主查询的数据判断当前流程点.");
             }
+            return activeFlow;
+        }
+        private void findActiveFlow(DataSet ds) {
+
+            this.activeFlow = FindActiveFlow(page, ds);
         }
 
         private void findBlackList() {
