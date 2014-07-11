@@ -51,11 +51,12 @@ namespace l.core.web
         //Func<string, object>, string 是参数， object 是返回值
 
         public void Bind(Func<string, object> predicate) {
-            foreach (string s in new[] { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName", "LocalStoreNO" }.Union(values.AllKeys)) {
+            var sysps = new List<string> { "Old_LastUpdateTime", "LastUpdateTime", "Operator", "OperName", "LocalStoreNO" };
+            foreach (string s in sysps.Union(values.AllKeys)) {
                 var ms = new Regex(@"[\w_]+\[\d+\]\.([\w_]+)$").Match(s);
-                if (ms.Success)
-                {
-                    if (paramsName.IndexOf( ms.Groups[1].Value) >= 0)
+                if (ms.Success) {
+                    if (paramsName.IndexOf(ms.Groups[1].Value) >= 0 
+                            && sysps.IndexOf(ms.Groups[1].Value) < 0) //系统参数不能用作重复参数
                         paramsHelper.AddParamValue(ms.Groups[1].Value, predicate(s) ?? getValue(s));
                 }
                 else if (paramsName.IndexOf(s) >= 0) 

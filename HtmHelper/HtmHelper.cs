@@ -49,8 +49,12 @@ namespace System.Web.Mvc.Html
         public string Id { get { return getName(); } }
         //自动计算id 和name（未完成序号）
         private string getName() {
-            return name ?? null; 
-                //(Parent == null ? "" : Parent.getName() + "_") + ((this.GetType().Name == "HtmlTagHelper" && (tagName != null)) ? tagName : this.GetType().Name);
+            try
+            {
+                return name ?? //null; 
+                    (Parent == null ? "" : (Parent.Id??"") + "_") + ((this.GetType().Name == "HtmlTagHelper" && (tagName != null)) ? tagName : this.GetType().Name) + ChildIndex.ToString();
+            }
+            catch { return null; };
         }
 
         public HtmlTagHelper(string name, string tagName, object htmlAttributes = null):base() {
