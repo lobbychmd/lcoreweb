@@ -440,7 +440,7 @@ namespace l.core.web
                 var ds = exec ? (q.QueryType == 0 ? q.ExecuteQuery(null, pageno.HasValue ? pageno.Value * pageRowCount : 0, pageno.HasValue ? pageRowCount : 0) : q.ExecuteDataObject(null, false))
                     : q.Prepare();
                 pageData.AddDataSet(i, ds);
-                __fms[i] = new FieldMetaHelper().Ready(ds, i);
+                __fms[i] = new FieldMetaHelper().Ready(ds, i).CheckSQLList(true, new Dictionary<string, DBParam> { { "Operator", new DBParam { ParamValue = Account.UserNO } } });
 
                 ExecuteLookup();
                 (__fms[i] as FieldMetaHelper).Ready(ds, i);
