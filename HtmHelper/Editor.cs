@@ -81,18 +81,19 @@ namespace l.core.web.html
                     
                     strHtml = html.DropDownList(name,  items, attr ).ToHtmlString();
                     if (dic) strHtml +=  html.TextBox(name + "@type", "dic", new { style = "display:none" }).ToHtmlString();
-
                 } else if ((mf.EditorType ?? "").ToUpper().Equals("BOOLEAN")) {
                     if (value is string) value = value.ToString() == "true,false"; else if (value == DBNull.Value ) value = null;
                     strHtml = html.CheckBox(name, Convert.ToBoolean( value), attr).ToHtmlString();
-                } else if ((mf.EditorType ?? "").ToUpper().Equals("DATE"))
+                } else if ((mf.EditorType ?? "").ToUpper().Equals("DATE")){
+                    attr["type"] = "_date";
                     strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
+                }
                 else if ((mf.EditorType ?? "").ToUpper().Equals("DATETIME"))  {//编辑框暂不支持日期时间
                     attr["type"] = "datetime";
                     strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
                 }
                 else if ((mf.EditorType ?? "").ToUpper().Equals("TIME")){
-                    attr["type"] = "time";
+                    attr["type"] = "_time";
                     strHtml = html.DatePicker(name, value, mf, attr).ToHtmlString();
                 }
                 else if ((mf.EditorType ?? "").ToUpper().Equals("NUMBER"))
