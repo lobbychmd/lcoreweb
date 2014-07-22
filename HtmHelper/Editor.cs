@@ -71,15 +71,20 @@ namespace l.core.web.html
                     bool idprefix = (mf.FieldName.Length > 2) && mf.FieldName.IndexOf("ID") == mf.FieldName.Length - 2;
                     var strvalue = Convert.ToString(value);
                     //if (!ParialMatch) if (!mf.List().ContainsKey(Convert.ToString(value))) d[Convert.ToString(value)] =Convert.ToString(value);
+                    if ((mf.EditorType ?? "").ToUpper().Equals("DROPDOWNLIST")) {
+                        var items = mf.List().Union(new Dictionary<string, string> { { "", "" } })
+                            .Select(p => new System.Web.Mvc.SelectListItem
+                            {
+                                Value = idprefix ? p.Key : p.Value,
+                                Text = p.Value,
+                                Selected = strvalue == p.Key || p.Key.IndexOf(strvalue + ".") == 0 || p.Key.IndexOf("." + strvalue) > 0
+                            });
 
-                    var items = mf.List().Union(new Dictionary<string, string> { {"",""}})
-                        .Select(p => new System.Web.Mvc.SelectListItem  {
-                            Value = p.Key,
-                            Text = p.Value,
-                            Selected = strvalue == p.Key || p.Key.IndexOf(strvalue + ".") == 0 || p.Key.IndexOf("." + strvalue) > 0
-                        });
-                    
-                    strHtml = html.DropDownList(name,  items, attr ).ToHtmlString();
+                        strHtml = html.DropDownList(name, items, attr).ToHtmlString();
+                    } else {
+                        attr["list"] = string.Join(";", mf.List().Select(p=> p.Key + "." + p.Value));
+                        strHtml = html.TextBox(name, value, attr).ToHtmlString();
+                    }
                     if (dic) strHtml +=  html.TextBox(name + "@type", "dic", new { style = "display:none" }).ToHtmlString();
                 } else if ((mf.EditorType ?? "").ToUpper().Equals("BOOLEAN")) {
                     if (value is string) value = value.ToString() == "true,false"; else if (value == DBNull.Value ) value = null;
