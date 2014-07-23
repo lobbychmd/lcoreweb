@@ -76,7 +76,7 @@ namespace l.core.web
                                 and rf.FuncID = :FuncID", new Dictionary<string, DBParam>{
                                         {"UserNO", new DBParam{ ParamValue = UserNO}},
                                         {"FuncID", new DBParam{ ParamValue = FuncID}},{"Where", new DBParam{ ParamValue = Where}}});
-                        Powers[FuncID] = dtModulePower.Rows.Count > 0;
+                        Powers[FuncID] = dtModulePower.Rows.Count >= 0;
                         return Powers[FuncID];
                     }
                 }

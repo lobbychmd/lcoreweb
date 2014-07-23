@@ -68,14 +68,14 @@ namespace l.core.web.html
                     strHtml = html.PropEditor(name, value, mf, attr).ToHtmlString();
                 else if (dic || dropdownlist)
                 {
-                    bool idprefix = (mf.FieldName.Length > 2) && mf.FieldName.IndexOf("ID") == mf.FieldName.Length - 2;
+                    bool idprefix = (mf.FieldName.Length > 2) && (mf.FieldName.IndexOf("ID") == mf.FieldName.Length - 2 || mf.FieldName.IndexOf("NO") == mf.FieldName.Length - 2);
                     var strvalue = Convert.ToString(value);
                     //if (!ParialMatch) if (!mf.List().ContainsKey(Convert.ToString(value))) d[Convert.ToString(value)] =Convert.ToString(value);
                     if ((mf.EditorType ?? "").ToUpper().Equals("DROPDOWNLIST")) {
                         var items = mf.List().Union(new Dictionary<string, string> { { "", "" } })
                             .Select(p => new System.Web.Mvc.SelectListItem
                             {
-                                Value = idprefix ? p.Key : p.Value,
+                                Value = idprefix || !dic? p.Key : p.Value,
                                 Text = p.Value,
                                 Selected = strvalue == p.Key || p.Key.IndexOf(strvalue + ".") == 0 || p.Key.IndexOf("." + strvalue) > 0
                             });
