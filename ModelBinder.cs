@@ -37,13 +37,13 @@ namespace l.core.web
                 return l.core.Crypt.Encode(userno +  values[key]);
             }
             else {
-                bool dickey = (values[key + "@type"] == "dic");
+                bool dic = (values[key + "@type"] == "dic");
                 bool dicvalue = (values[key + "ID"] != null && values[key + "ID@type"] == "dic");
 
                 bool idprefix = ((key.Length > 2) && key.IndexOf("ID") == key.Length - 2);
 
-                if (dickey || dicvalue)
-                    return getDic(dickey ? values[key] : values[key + "ID"], idprefix);
+                if (idprefix || dicvalue)
+                    return getDic(idprefix ? values[key] : values[key + "ID"], idprefix);
                 else return values[key];
             } 
 
