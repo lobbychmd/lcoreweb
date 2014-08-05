@@ -89,7 +89,9 @@ namespace l.core.web
                 prepareUI(html, page.UI, uiObjectArray);
 
                 var layoutEvalResult = new Dictionary<dynamic, int>();
-                if (partial) { }
+                if (partial) {
+                    prepareUI(html, "ModulePage {}", layoutEvalResult);
+                }
                 else{
                     if (theme != null) prepareUI(html, theme.LayoutUI, layoutEvalResult);
                     else layoutEvalResult[new l.core.web.html.ModulePage(html, "module_page_" + (helper.Account.CurrModule == null?"-1":helper.Account.CurrModule.ModuleID) + "_" + page.PageID, page, helper)] = 0;
