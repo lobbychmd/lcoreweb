@@ -87,7 +87,7 @@ namespace l.core.web.html
                     }
                     if (dic) strHtml +=  html.TextBox(name + "@type", "dic", new { style = "display:none" }).ToHtmlString();
                 } else if ((mf.EditorType ?? "").ToUpper().Equals("BOOLEAN")) {
-                    if (value is string) value = value.ToString() == "true,false"; else if (value == DBNull.Value ) value = null;
+                    if (value is string) value = value.ToString() == "true,false" || value.ToString() == "true"; else if (value == DBNull.Value) value = null;
                     strHtml = html.CheckBox(name, Convert.ToBoolean( value), attr).ToHtmlString();
                 } else if ((mf.EditorType ?? "").ToUpper().Equals("DATE")){
                     attr["type"] = "_date";

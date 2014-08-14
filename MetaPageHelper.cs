@@ -91,6 +91,7 @@ namespace l.core.web
                 var layoutEvalResult = new Dictionary<dynamic, int>();
                 if (partial) {
                     prepareUI(html, "ModulePage {}", layoutEvalResult);
+                    mergeLayout(layoutEvalResult);
                 }
                 else{
                     if (theme != null) prepareUI(html, theme.LayoutUI, layoutEvalResult);
@@ -442,14 +443,19 @@ namespace l.core.web
                 var ds = exec ? (q.QueryType == 0 ? q.ExecuteQuery(null, pageno.HasValue ? pageno.Value * pageRowCount : 0, pageno.HasValue ? pageRowCount : 0) : q.ExecuteDataObject(null, false))
                     : q.Prepare();
                 pageData.AddDataSet(i, ds);
-                __fms[i] = new FieldMetaHelper().Ready(ds, i).CheckSQLList(true, new Dictionary<string, DBParam> { { "Operator", new DBParam { ParamValue = Account.UserNO } } });
+                var plist = new Dictionary<string, DBParam> { { "Operator", new DBParam { ParamValue = Account.UserNO } } };
+                if (q.QueryType == 1 && exec && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count == 1)
+                    foreach (System.Data.DataColumn dc in ds.Tables[0].Columns) plist[dc.Caption] = new DBParam{ ParamValue = ds.Tables[0].Rows[0][dc] };
+                __fms[i] = new FieldMetaHelper().Ready(ds, i).CheckSQLList(true, plist);
 
-                ExecuteLookup();
-                (__fms[i] as FieldMetaHelper).Ready(ds, i);
-                if (mainQuery) {
-                    findActiveFlow(ds);
-                    findBlackList();
-                };
+                if (l.core.Query.GetErrors(ds).Count() == 0) {
+                    ExecuteLookup();
+                    (__fms[i] as FieldMetaHelper).Ready(ds, i);
+                    if (mainQuery) {
+                        findActiveFlow(ds);
+                        findBlackList();
+                    };
+                }
             }
         }
 

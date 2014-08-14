@@ -208,7 +208,7 @@ namespace l.core.web.html
             : base(name, null, null)
         {
             this.html = html; this.block = block;
-            var h3 = Add(null, "h3").Add(null, "a").Attr("href", "#").Text(caption).Parent;
+            var h3 = Add(name, "h3").Add(null, "a").Attr("href", "#").Text(caption).Parent;
 
             //将子节点的容器重定向
             ChildContainer = Add(null, "div");
