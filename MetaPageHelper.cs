@@ -542,22 +542,26 @@ namespace l.core.web
 
         public BizResult CheckLookup(Biz biz) {
             if (page != null && !string.IsNullOrEmpty(page.MainQuery)) {
-                var dt = new System.Data.DataTable();
-                foreach (var i in biz.Params)
-                    if (!i.ParamRepeated) dt.Columns.Add(i.ParamName);//.DataType = biz.SmartParams.GetDBType( i.ParamType);
-                dt.Rows.Add(dt.NewRow());
-                foreach (var i in biz.Params)
-                    if (!i.ParamRepeated) dt.Rows[0][i.ParamName] = biz.SmartParams.GetParamValue(i.ParamName);
+                var ls = page.Lookups.Where(p => p.Check);
+                if (ls.Count() > 0){
+                    var dt = new System.Data.DataTable();
+                    foreach (var i in biz.Params)
+                        if (!i.ParamRepeated) dt.Columns.Add(i.ParamName);//.DataType = biz.SmartParams.GetDBType( i.ParamType);
+                    dt.Rows.Add(dt.NewRow());
+                    foreach (var i in biz.Params)
+                        if (!i.ParamRepeated) dt.Rows[0][i.ParamName] = biz.SmartParams.GetParamValue(i.ParamName);
 
-                foreach (var l in page.Lookups) {
-                    if (!l.CheckLookup(dt)) {
-                        new l.core.FieldMetaHelper().Ready(dt);
-                        return new BizResult { Errors = new List<BizValidationResult> { new BizValidationResult("(" + 
-                            string.Join(", ", l.KeyFields.Select(p=> dt.Columns[p].Caption)) + ") 未能正确关联上."
-                            ) } };
+                    foreach (var l in ls) {
+                        if (page.MainQuery == l.Table)
+                            if (!l.CheckLookup(dt)) {
+                                new l.core.FieldMetaHelper().Ready(dt);
+                                return new BizResult { Errors = new List<BizValidationResult> { new BizValidationResult("(" + 
+                                    string.Join(", ", l.KeyFields.Select(p=> dt.Columns[p].Caption)) + ") 未能正确关联上."
+                                    ) } };
+                            }
                     }
-                }
-                return null;
+                    return null;
+                } else return null;
             } else return null;
         }
     }
