@@ -20,7 +20,6 @@ namespace System.Web.Mvc.Html
         string Html();
     }
 
-    
     public class HtmlTagHelper :IHtml {
         private string tagName, name;
         private HtmlAttr attrs;
