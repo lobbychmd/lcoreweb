@@ -97,7 +97,7 @@ namespace l.core.web
 
         public void UpdateModules( DataTable dtModule) {
             #region 自动更新新模块
-            if (dtModule == null) dtModule = getMetaModule();
+            if (dtModule == null) dtModule = getMetaModule( Where);
             using (var conn = Project.Current.GetConn()) {
                 if (l.core.VersionHelper.Helper != null && l.core.VersionHelper.Helper.Action.IndexOf("update") >= 0)   {
                     l.core.MetaModule[] modules = l.core.VersionHelper.Helper.GetAs<l.core.MetaModule[]>("MetaModule.all", null) as l.core.MetaModule[];
@@ -135,11 +135,13 @@ namespace l.core.web
             #endregion
         }
 
-        private DataTable getMetaModule(){
-            
+        private DataTable getMetaModule(string where){
             using (var conn1 = Project.Current.GetFrmConn()) {
                 DataTable dtModule = null;
-                dtModule = DBHelper.ExecuteQuery(conn1, @"select * from metaModule", null);
+                dtModule = DBHelper.ExecuteQuery(conn1, @"select * from metaModule where Subsystems is null or ( ' '  + Subsystems +  ' ') like :where",
+                    new Dictionary<string, DBParam> { {
+                            "where", new DBParam{ ParamValue = "% " + where + " %"}                              
+                        }});
                 dtModule .DefaultView.Sort = "ModuleID";
                 return dtModule;
             }
@@ -176,7 +178,7 @@ namespace l.core.web
             if(Signin){
                 using (var conn = l.core.Project.Current.GetConn())
                 {
-                    DataTable dtModule = getMetaModule();
+                    DataTable dtModule = getMetaModule(Where);
                     if (System.Configuration.ConfigurationManager.AppSettings["ManualUpdateModules"] != "true")
                         UpdateModules(dtModule);
 
@@ -218,3 +220,4 @@ namespace l.core.web
 
  
 }
+ 
