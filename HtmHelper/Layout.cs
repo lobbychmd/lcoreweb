@@ -36,7 +36,7 @@ namespace l.core.web.html
         public ModulePage(HtmlHelper html, string name, l.core.ModulePage page, MetaPageHelper pageHelper1)
             : base(name, "div", null)
         {
-            Attr("style", "display:none");
+            //Attr("style", "display:none");
             var m = l.core.web.Account.Current(html.ViewContext.Controller).CurrModule;
             //if (m != null && page != null) //这里没用，会被后面覆盖
             //    name= "module_page_" + m.ModuleID + "_" + page.PageID.ToString();

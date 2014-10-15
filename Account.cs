@@ -138,7 +138,7 @@ namespace l.core.web
         private DataTable getMetaModule(string where){
             using (var conn1 = Project.Current.GetFrmConn()) {
                 DataTable dtModule = null;
-                dtModule = DBHelper.ExecuteQuery(conn1, @"select * from metaModule where Subsystems is null or ( ' '  + Subsystems +  ' ') like :where",
+                dtModule = DBHelper.ExecuteQuery(conn1, @"select * from metaModule where rtrim(isnull(Subsystems, '')) = ''  or ( ' '  + Subsystems +  ' ') like :where",
                     new Dictionary<string, DBParam> { {
                             "where", new DBParam{ ParamValue = "% " + where + " %"}                              
                         }});
