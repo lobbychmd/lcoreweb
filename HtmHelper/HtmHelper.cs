@@ -57,10 +57,10 @@ namespace System.Web.Mvc.Html
         }
 
         public HtmlTagHelper(string name, string tagName, object htmlAttributes = null):base() {
+            attrs = new HtmlAttr(htmlAttributes);
             this.tagName = tagName;
             this.name = name;
             children = new List<IHtml>();
-            attrs = new HtmlAttr(htmlAttributes);
         }
 
         public HtmlTagHelper Attr(string attr, string value){
@@ -68,8 +68,7 @@ namespace System.Web.Mvc.Html
             return this;
         }
 
-        public HtmlTagHelper Css(string key, string value)
-        {
+        public HtmlTagHelper Css(string key, string value) {
             attrs.Css(key, value);
             return this;
         }
@@ -312,7 +311,6 @@ namespace System.Web.Mvc.Html
                         this[p.Name] = p.GetValue(htmlAttributes, null);
                 }
             }
-
 
         }
 

@@ -27,6 +27,11 @@ namespace l.core.web.html
             MvcHtmlString result = new MvcHtmlString(new l.core.web.html.PropEditor(html, name, value, mf, htmlAttributes).Html());
             return result;
         }
+        static public MvcHtmlString MarkdownEditor(this HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes)
+        {
+            MvcHtmlString result = new MvcHtmlString(new l.core.web.html.MarkdownEditor(html, name, value, mf, htmlAttributes).Html());
+            return result;
+        }
     }
 
     public class Editor : IHtml {
@@ -110,6 +115,8 @@ namespace l.core.web.html
                     strHtml = html.TextArea(name, (value ?? "").ToString(), attr).ToHtmlString();
                 }
 
+                else if ((mf.EditorType ?? "").ToUpper().Equals("MARKDOWN"))
+                    strHtml = html.MarkdownEditor(name, value, mf, attr).ToHtmlString();
                 else if ((mf.EditorType ?? "").ToUpper().Equals("PASSWORD"))
                     strHtml = html.PasswordEditor(name, value, mf, attr).ToHtmlString();
                 else
@@ -226,6 +233,25 @@ namespace l.core.web.html
             Add(html.DropDownList(name, value.ToString().Split('\n').Where(p=> p.Trim()!="").Select(p => new SelectListItem { Text= p }), new { Size = 5 }).ToHtmlString());
             Add("<br/>");
             Add(html.TextArea(name, value.ToString(), htmlAttributes).ToHtmlString());
+        }
+    }
+
+    public class MarkdownEditor : IHtml
+    {
+        private string strHtml;
+
+        public MarkdownEditor(System.Web.Mvc.HtmlHelper html, string name, object value, l.core.MetaField mf, object htmlAttributes)
+        {
+            var attr = new HtmlAttr(htmlAttributes);
+            attr["rows"] = 10;
+           // Editor.SetSizeAttr(attr, mf);
+            attr["class"] = (attr.ContainsKey("class") ? (attr["class"].ToString() + " ") : "") + "markdown";
+            strHtml = html.TextArea(name, (value ?? "").ToString(), attr).ToHtmlString();
+        }
+
+        public string Html()
+        {
+            return strHtml;
         }
     }
 }

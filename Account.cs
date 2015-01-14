@@ -197,6 +197,20 @@ namespace l.core.web
             }
         }
 
+        public void Log(string moduleID, string pageID, string bizID, string content) {
+            using (var conn = l.core.Project.Current.GetConn()) {
+                l.core.DBHelper.ExecuteQuery(conn, @"insert into tOpLog(UserNO, OpContent, ModuleID, PageID, BizID, At) 
+                  values (:UserNO, :OpContent, :ModuleID, :PageID, :BizID, :At)",
+                            new Dictionary<string, DBParam>{
+                                {"UserNO", new DBParam{ ParamValue = UserNO}},
+                                {"OpContent", new DBParam{ ParamValue = content}},
+                                {"ModuleID", new DBParam{ ParamValue = moduleID}},
+                                {"PageID", new DBParam{ ParamValue = pageID}},
+                                {"BizID", new DBParam{ ParamValue = bizID}},
+                                {"At", new DBParam{ ParamValue = DateTime.Now}}
+                            });
+            }
+        }
         public static void Refresh(System.Web.Mvc.ViewDataDictionary viewData) {
             viewData.Remove("Account"); 
         }
