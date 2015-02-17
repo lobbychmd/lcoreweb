@@ -60,7 +60,7 @@ namespace l.core.web.html
             var attr = new HtmlAttr(htmlAttributes);
             attr["editor"] = "true";
             attr["fn"] = name.IndexOf(".") < 0 ? name : name.Split('.').Last();
-            attr["class"] = attr.ContainsKey("class") ? attr["class"] + " editor" : "editor";
+            attr["class"] = attr.ContainsKey("class") ? attr["class"] + " editor form-control" : "editor form-control";
             if (!string.IsNullOrEmpty(mf.Regex)) { //支持正则表达式的注释，就是 # 后面的所有文字
                 attr["format"] = mf.Regex.IndexOf('#') > 0 ? mf.Regex.Split('#')[0].Trim() : mf.Regex;
                 if (mf.Regex.IndexOf('#') > 0) attr["formatErrorMsg"] = mf.Regex.Split('#')[1];
