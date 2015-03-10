@@ -69,7 +69,7 @@ namespace l.core.web
             this.pageData = pageData;
             this.page = page;
             this.webAssembly = webAssembly;
-            if (context.ControllerContext.RequestContext.HttpContext.Request.Headers["X-Requested-With"] == null){
+            if (context.ControllerContext.RequestContext.HttpContext.Request.Headers["X-Requested-With"] != "XMLHttpRequest"){
                 string themeid = System.Configuration.ConfigurationManager.AppSettings["Layout"];
                 if (!string.IsNullOrEmpty(themeid)) {
                     theme = new Theme(themeid).Load();
